@@ -45,6 +45,8 @@ using namespace std;
 //}
 
 
+// Function to XOR-decrypt a string using a key
+
 string xor_decrypt(string& value, string& key) {
 	ostringstream os;
     for (int i = 0; i < value.size(); i +=2) {
@@ -63,24 +65,24 @@ int main()
 
 
     string key = "k3vin";
-    string value = "0a471e0c000a";
+    string value = "0a471e0c000a"; // encrypted value, which the original message is 'athena'
 
 	string decrypt = xor_decrypt(value, key);
 
-
-    LPVOID pMem = VirtualAlloc(0, sizeof(decrypt), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+    
+    LPVOID pMem = VirtualAlloc(0, sizeof(decrypt), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE); // dynamically allocate memory to store our key
 	if (pMem == NULL) {
 		cout << "VirtualAlloc failed" << endl;
 		return 1;
 	}
 
-	RtlCopyMemory(pMem, decrypt.c_str(), sizeof(decrypt)); // c_str returns non-modifiable non temrinated version of S
+	RtlCopyMemory(pMem, decrypt.c_str(), sizeof(decrypt)); // c_str returns a c-string.
 
 	cout << "Decrypted value: " << (char*)pMem << endl;
 
 	std::cin.get();
 
-	MessageBoxA(0, (char*)pMem, "Decrypted value", MB_OK); // WE WILL BE HOOKING THIS FUNCTIOn
+	MessageBoxA(0, (char*)pMem, "Decrypted value", MB_OK); // WE WILL BE HOOKING THIS FUNCTION
 
 	VirtualFree(pMem, 0, MEM_RELEASE);
 
